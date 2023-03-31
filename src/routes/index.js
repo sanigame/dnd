@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Routes, Route } from 'react-router-dom'
 
+import { Layout } from '../layout'
+
 import routes from './routes'
 
 const renderRoutes = (routeList) => {
@@ -11,7 +13,11 @@ const renderRoutes = (routeList) => {
 }
 
 const AppRoutes = () => {
-  return <Routes>{renderRoutes(routes)}</Routes>
+  return (
+    <Layout>
+      <Routes>{renderRoutes(routes)}</Routes>
+    </Layout>
+  )
 }
 
 export default AppRoutes
