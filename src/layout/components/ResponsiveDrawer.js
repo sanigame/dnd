@@ -76,7 +76,7 @@ const ResponsiveDrawer = ({ window, children }) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+            dnd
           </Typography>
         </Toolbar>
       </AppBar>

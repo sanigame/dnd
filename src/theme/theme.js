@@ -5,7 +5,7 @@ import { createTheme } from '@mui/material/styles'
 const theme = (isDarkMode = false) => {
   return createTheme({
     palette: {
-      type: isDarkMode ? 'light' : 'light',
+      type: isDarkMode ? 'light' : 'dark',
       primary: {
         main: '#02ab55',
       },
