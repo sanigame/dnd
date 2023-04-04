@@ -27,6 +27,7 @@
     "path-to-regexp": "^6.2.1",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-redux": "^8.0.5",
@@ -61,7 +62,8 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix .",
     "format": "prettier --check './src/**/*.{js,jsx,ts,tsx,css,md,json}'",
-    "format:fix": "prettier --write './src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+    "format:fix": "prettier --write './src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
+    "clean": "rm -rf node_modules && yarn"
   },
   "eslintConfig": {
     "extends": [
