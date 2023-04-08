@@ -8,7 +8,7 @@ const Item = forwardRef(({ id, withOpacity, isDragging, style, ...props }, ref) 
     opacity: withOpacity ? '0.5' : '1',
     transformOrigin: '50% 50%',
     height: '140px',
-    width: '140px',
+    width: '100%',
     borderRadius: '10px',
     cursor: isDragging ? 'grabbing' : 'grab',
     backgroundColor: '#ffffff',
