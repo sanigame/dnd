@@ -59,7 +59,7 @@ const GridSortable = () => {
         </Grid> */}
         <Grid container spacing={2}>
           {items.map((id) => (
-            <Grid item xs={6} md={4} key={id} id={id}>
+            <Grid item xs={6} sm={4} md={3} lg={2} key={id} id={id}>
               <SortableItem key={id} id={id} />
             </Grid>
           ))}
