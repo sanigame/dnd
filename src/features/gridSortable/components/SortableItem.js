@@ -16,6 +16,10 @@ const SortableItem = (props) => {
     transition: transition || undefined,
   }
 
+  const goToDetail = () => {
+    console.log('go to id ', props.id)
+  }
+
   return (
     <Item
       ref={setNodeRef}
@@ -24,6 +28,7 @@ const SortableItem = (props) => {
       {...props}
       {...attributes}
       {...listeners}
+      onClick={() => goToDetail()}
     />
   )
 }

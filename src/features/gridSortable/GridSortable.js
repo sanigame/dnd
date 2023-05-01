@@ -19,7 +19,14 @@ import SortableItem from './components/SortableItem'
 const GridSortable = () => {
   const [items, setItems] = useState(Array.from({ length: 20 }, (_, i) => (i + 1).toString()))
   const [activeId, setActiveId] = useState(null)
-  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor),
+  )
 
   const handleDragStart = useCallback((event) => {
     setActiveId(event.active.id)
