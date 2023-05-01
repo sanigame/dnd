@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.ql-editor ul[data-checked='true'] li {
+  text-decoration: line-through;
+}
