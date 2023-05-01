@@ -25,7 +25,11 @@ const GridSortable = () => {
         distance: 8,
       },
     }),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 20,
+      },
+    }),
   )
 
   const handleDragStart = useCallback((event) => {
