@@ -4,6 +4,7 @@ import { redditDetailAction } from '../features/redditDetail/redux'
 import { redditListAction } from '../features/redditList/redux'
 // import GridPage from '../pages/GridPage'
 import GridSortablePage from '../pages/GridSortablePage'
+import NoteDetailPage from '../pages/NoteDetailPage'
 import RedditDetailPage from '../pages/RedditDetailPage'
 import RedditListPage from '../pages/RedditListPage'
 
@@ -12,6 +13,11 @@ const routes = [
     path: '/',
     exact: true,
     element: <GridSortablePage />,
+  },
+  {
+    path: '/detail/:noteId',
+    exact: true,
+    element: <NoteDetailPage />,
   },
   // {
   //   path: '/',

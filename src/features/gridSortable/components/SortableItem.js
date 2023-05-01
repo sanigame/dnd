@@ -3,10 +3,12 @@ import React from 'react'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useNavigate } from 'react-router-dom'
 
 import Item from './Item'
 
 const SortableItem = (props) => {
+  const navigate = useNavigate()
   const { isDragging, attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: props.id,
   })
@@ -17,7 +19,7 @@ const SortableItem = (props) => {
   }
 
   const goToDetail = () => {
-    console.log('go to id ', props.id)
+    navigate('/detail/' + props.id)
   }
 
   return (
