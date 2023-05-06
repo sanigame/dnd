@@ -1,85 +1,63 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useRef } from 'react'
+import React, { Component, useEffect, useState, useRef } from 'react'
 
 import defer from 'lodash/defer'
 import map from 'lodash/map'
 import PropTypes from 'prop-types'
 import Quill from 'quill'
 
+import { Poll, Header } from '../../quillEmbed/formats'
+import { Keyboard } from '../../quillEmbed/modules/keyboard'
+
 import 'react-quill/dist/quill.snow.css'
 import './style.css'
 
-const NoteDetail = ({ noteId }) => {
-  let editor = null
-  const editorContainer = useRef()
-  // const quillRef = useRef()
-  // const [value, setValue] = useState('')
-  const [embedBlots, setaEmbedBlots] = useState([])
+Quill.register(
+  {
+    'formats/header': Header,
+    'formats/poll': Poll,
+    'modules/keyboard': Keyboard,
+  },
+  true,
+)
 
-  const modules = {
-    toolbar: [
-      // [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-      ['link', 'image'],
-    ],
+class NoteDetail extends Component {
+  constructor(props) {
+    super(props)
+    this.editor = null
+    this.editorContainer = React.createRef()
+    this.state = {
+      embedBlots: [],
+    }
   }
 
-  const formats = [
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'image',
-  ]
-
-  const onMount = (...blots) => {
-    const embeds = blots.reduce(
-      (memo, blot) => {
-        memo[blot.id] = blot
-        return memo
-      },
-      { ...embedBlots },
-    )
-    setaEmbedBlots(embeds)
-  }
-
-  const onUnmount = (unmountedBlot) => {
-    const { [unmountedBlot.id]: blot, ...embedBlots } = embedBlots
-    setaEmbedBlots(embedBlots)
-  }
-
-  useEffect(() => {
-    editor = new Quill(editorContainer.current, {
+  componentDidMount() {
+    this.editor = new Quill(this.editorContainer.current, {
       placeholder: 'Start typing',
       readOnly: false,
-      // formats: ['header', 'poll'],
+      formats: ['header', 'poll'],
       theme: 'snow',
-      modules: modules,
-      formats: formats,
     })
 
     let blots = []
     /** Listener to listen for custom format */
-    editor.scroll.emitter.on('blot-mount', (blot) => {
+    this.editor.scroll.emitter.on('blot-mount', (blot) => {
       blots.push(blot)
       defer(() => {
         if (blots.length > 0) {
-          onMount(...blots)
+          this.onMount(...blots)
           blots = []
         }
       })
     })
-    editor.scroll.emitter.on('blot-unmount', onUnmount)
+    this.editor.scroll.emitter.on('blot-unmount', this.onUnmount)
 
     const delta = {
       ops: [
+        /** Bold Formatting */
+        {
+          insert: 'Header 1',
+        },
         {
           insert: '\n',
           attributes: {
@@ -88,19 +66,48 @@ const NoteDetail = ({ noteId }) => {
         },
       ],
     }
-    editor.setContents(delta)
+    this.editor.setContents(delta)
+  }
 
-    return () => {}
-  }, [])
+  onMount(...blots) {
+    const embeds = blots.reduce(
+      (memo, blot) => {
+        memo[blot.id] = blot
+        return memo
+      },
+      { ...this.state.embedBlots },
+    )
+    this.setState({ embedBlots: embeds })
+  }
 
-  return (
-    <div>
-      <p>NoteDetail {noteId}</p>
-      <div spellCheck={false} ref={editorContainer}>
-        {map(embedBlots, (blot) => blot.renderPortal(blot.id))}
-      </div>
-    </div>
-  )
+  onUnmount(unmountedBlot) {
+    console.log('unmountedBlot', unmountedBlot)
+
+    // if (unmountedBlot) {
+    //   const { [unmountedBlot.id]: blot, ...embedBlots } = this.state.embedBlots
+    //   this.setState({ embedBlots })
+    // }
+  }
+
+  renderPoll() {
+    const range = this.editor.getSelection(true)
+    const type = 'poll'
+    const data = {}
+    /** Call pollFormat */
+    this.editor.insertEmbed(range.index, type, data)
+    console.log(this.editor.getContents())
+  }
+
+  render() {
+    return (
+      <>
+        <div spellCheck={false} ref={this.editorContainer}>
+          {map(this.state.embedBlots, (blot) => blot.renderPortal(blot.id))}
+        </div>
+        <button onClick={() => this.renderPoll()}>Poll</button>
+      </>
+    )
+  }
 }
 
 NoteDetail.propTypes = {
