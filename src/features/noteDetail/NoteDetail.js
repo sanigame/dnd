@@ -1,20 +1,21 @@
-import React, { useState, useRef } from 'react'
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState, useRef } from 'react'
 
+import defer from 'lodash/defer'
+import map from 'lodash/map'
 import PropTypes from 'prop-types'
-import ReactQuill from 'react-quill' // , { Quill }
+import Quill from 'quill'
 
 import 'react-quill/dist/quill.snow.css'
 import './style.css'
 
-// let Inline = Quill.import('blots/inline')
-// class BoldBlot extends Inline {}
-// BoldBlot.blotName = 'bold'
-// BoldBlot.tagName = 'h1'
-// Quill.register('formats/bold', BoldBlot)
-
 const NoteDetail = ({ noteId }) => {
-  const quillRef = useRef()
-  const [value, setValue] = useState('')
+  let editor = null
+  const editorContainer = useRef()
+  // const quillRef = useRef()
+  // const [value, setValue] = useState('')
+  const [embedBlots, setaEmbedBlots] = useState([])
+
   const modules = {
     toolbar: [
       // [{ header: [1, 2, false] }],
@@ -38,28 +39,66 @@ const NoteDetail = ({ noteId }) => {
     'image',
   ]
 
-  const insertText = () => {
-    var range = quillRef.current.editor.getSelection()
-    let position = range ? range.index : 0
-    quillRef.current.editor.insertText(position, 'Hello, World! ')
+  const onMount = (...blots) => {
+    const embeds = blots.reduce(
+      (memo, blot) => {
+        memo[blot.id] = blot
+        return memo
+      },
+      { ...embedBlots },
+    )
+    setaEmbedBlots(embeds)
   }
+
+  const onUnmount = (unmountedBlot) => {
+    const { [unmountedBlot.id]: blot, ...embedBlots } = embedBlots
+    setaEmbedBlots(embedBlots)
+  }
+
+  useEffect(() => {
+    editor = new Quill(editorContainer.current, {
+      placeholder: 'Start typing',
+      readOnly: false,
+      // formats: ['header', 'poll'],
+      theme: 'snow',
+      modules: modules,
+      formats: formats,
+    })
+
+    let blots = []
+    /** Listener to listen for custom format */
+    editor.scroll.emitter.on('blot-mount', (blot) => {
+      blots.push(blot)
+      defer(() => {
+        if (blots.length > 0) {
+          onMount(...blots)
+          blots = []
+        }
+      })
+    })
+    editor.scroll.emitter.on('blot-unmount', onUnmount)
+
+    const delta = {
+      ops: [
+        {
+          insert: '\n',
+          attributes: {
+            header: 1,
+          },
+        },
+      ],
+    }
+    editor.setContents(delta)
+
+    return () => {}
+  }, [])
 
   return (
     <div>
       <p>NoteDetail {noteId}</p>
-      <ReactQuill
-        theme="snow"
-        modules={modules}
-        formats={formats}
-        value={value}
-        onChange={setValue}
-        ref={quillRef}
-        // onChange={(e) => {
-        //   console.log(e)
-        //   setValue(e.replace(/\s/g, '&nbsp'))
-        // }}
-      />
-      <button onClick={() => insertText()}>Insert Text</button>
+      <div spellCheck={false} ref={editorContainer}>
+        {map(embedBlots, (blot) => blot.renderPortal(blot.id))}
+      </div>
     </div>
   )
 }
