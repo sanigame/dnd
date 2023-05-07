@@ -67,6 +67,10 @@ class NoteDetail extends Component {
       ],
     }
     this.editor.setContents(delta)
+    this.editor.on('text-change', () => {
+      const html = this.editor.root.innerHTML
+      console.log('html', html)
+    })
   }
 
   onMount(...blots) {
