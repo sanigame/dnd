@@ -5,6 +5,9 @@ import ReactQuill, { Quill } from 'react-quill' // , { Quill }
 
 import 'react-quill/dist/quill.snow.css'
 import './style.css'
+// import { Poll } from './poll'
+// Quill.register(Poll, true)
+
 const Inline = Quill.import('blots/inline')
 
 // let Inline = Quill.import('blots/inline')
@@ -12,6 +15,16 @@ const Inline = Quill.import('blots/inline')
 // BoldBlot.blotName = 'bold'
 // BoldBlot.tagName = 'h1'
 // Quill.register('formats/bold', BoldBlot)
+
+let BlockEmbed = Quill.import('blots/block/embed')
+class DividerBlot extends BlockEmbed {}
+DividerBlot.blotName = 'divider'
+DividerBlot.tagName = 'hr'
+Quill.register(DividerBlot, true)
+
+var Image = Quill.import('formats/image')
+Image.className = 'custom-class-to-image'
+Quill.register(Image, true)
 
 const NoteDetail = ({ noteId }) => {
   const quillRef = useRef()
@@ -26,6 +39,7 @@ const NoteDetail = ({ noteId }) => {
   }
 
   const formats = [
+    'divider',
     'header',
     'bold',
     'italic',
@@ -93,6 +107,21 @@ const NoteDetail = ({ noteId }) => {
     setValue(newHtml)
   }
 
+  const createPoll = () => {
+    // ----------------
+    // const quill = quillRef.current
+    // const editor = quill.getEditor()
+    // editor.insertEmbed(
+    //   0,
+    //   'image',
+    //   'https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg',
+    // )
+    // ----------------
+    // const quill = quillRef.current
+    // const editor = quill.getEditor()
+    // editor.insertEmbed(0, 'divider', {})
+  }
+
   return (
     <div>
       <p>NoteDetail {noteId}</p>
@@ -111,6 +140,7 @@ const NoteDetail = ({ noteId }) => {
       <button onClick={() => insertText()}>Insert Text</button>
       <button onClick={() => insertHtml()}>Insert HTML</button>
       <button onClick={() => buttonClick()}>click me</button>
+      <button onClick={() => createPoll()}>poll</button>
     </div>
   )
 }
