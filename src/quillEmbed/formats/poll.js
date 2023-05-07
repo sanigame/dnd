@@ -15,6 +15,7 @@ export class Poll extends BlockEmbed {
     let node = super.create(value)
     const refs = Poll.refs
     node.setAttribute('data-id', id)
+    node.setAttribute('contentEditable', false)
     Poll.data = value
     Poll.refs = {
       ...refs,
